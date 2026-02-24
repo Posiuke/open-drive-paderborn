@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Pipeline data (large files, regeneratable)
+data/cache/
+data/export/
+cache/
+
+# Godot
+godot/.godot/
+godot/assets/chunks/*.glb
+godot/assets/chunks/*.glb.import
+godot/.import/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/

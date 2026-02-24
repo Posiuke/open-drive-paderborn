@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="16" fill="#2d5a9e"/>
+  <text x="64" y="52" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold" fill="white">OPEN</text>
+  <text x="64" y="78" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold" fill="white">DRIVE</text>
+  <text x="64" y="102" text-anchor="middle" font-family="Arial" font-size="12" fill="#aaccee">Paderborn</text>
+</svg>
