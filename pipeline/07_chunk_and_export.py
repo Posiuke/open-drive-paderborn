@@ -17,6 +17,7 @@ from config import (
 from utils.geo import bbox_to_local
 from utils.mesh_builder import MeshData, simplify_polygon
 from utils.chunk_manager import ChunkManager
+from utils.glb_exporter import mesh_to_glb as _glb_export
 
 
 def clip_mesh_to_chunk(mesh, min_x, max_x, min_z, max_z):

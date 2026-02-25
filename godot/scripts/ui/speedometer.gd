@@ -17,7 +17,7 @@ func _process(_delta: float) -> void:
 
 func _draw() -> void:
 	var center := size / 2.0
-	var radius := min(size.x, size.y) / 2.0 - 10.0
+	var radius: float = min(size.x, size.y) / 2.0 - 10.0
 
 	# Background circle
 	draw_circle(center, radius, bg_color)
@@ -31,22 +31,22 @@ func _draw() -> void:
 	for i in range(0, int(max_speed) + 1, 20):
 		var t := float(i) / max_speed
 		var angle := start_angle + t * sweep
-		var inner := center + Vector2(cos(angle), sin(angle)) * (radius - 20)
-		var outer := center + Vector2(cos(angle), sin(angle)) * (radius - 5)
+		var inner: Vector2 = center + Vector2(cos(angle), sin(angle)) * (radius - 20)
+		var outer: Vector2 = center + Vector2(cos(angle), sin(angle)) * (radius - 5)
 		draw_line(inner, outer, dial_color, 2.0)
 
 	# Minor ticks (every 10 km/h)
 	for i in range(0, int(max_speed) + 1, 10):
 		var t := float(i) / max_speed
 		var angle := start_angle + t * sweep
-		var inner := center + Vector2(cos(angle), sin(angle)) * (radius - 12)
-		var outer := center + Vector2(cos(angle), sin(angle)) * (radius - 5)
+		var inner: Vector2 = center + Vector2(cos(angle), sin(angle)) * (radius - 12)
+		var outer: Vector2 = center + Vector2(cos(angle), sin(angle)) * (radius - 5)
 		draw_line(inner, outer, dial_color, 1.0)
 
 	# Needle
 	var speed_t := clampf(_speed / max_speed, 0.0, 1.0)
 	var needle_angle := start_angle + speed_t * sweep
-	var needle_end := center + Vector2(cos(needle_angle), sin(needle_angle)) * (radius - 25)
+	var needle_end: Vector2 = center + Vector2(cos(needle_angle), sin(needle_angle)) * (radius - 25)
 	draw_line(center, needle_end, needle_color, 3.0, true)
 
 	# Center hub

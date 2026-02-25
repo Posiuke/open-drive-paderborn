@@ -123,6 +123,13 @@ LANDUSE_COLORS = {
 PHYSICS_TICKRATE = 120  # Hz
 TARGET_FPS = 60
 
+# === Server Settings ===
+SERVER_HOST = "0.0.0.0"
+SERVER_PORT = 8090
+SERVER_WORKERS = 4
+SERVER_CACHE_DIR = PROJECT_ROOT / "pipeline" / "server_cache"
+MEGATILE_SIZE = 2048.0  # 2km x 2km OSM fetch blocks (8x8 chunks)
+
 # === OSM Tags to Download ===
 OSM_BUILDING_TAGS = {"building": True}
 OSM_ROAD_TAGS = {

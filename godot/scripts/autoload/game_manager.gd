@@ -1,6 +1,7 @@
 extends Node
 
 ## Global game state manager (Autoload singleton).
+## Supports both file-based (offline) and server-based (streaming) modes.
 
 # Game state
 var player_car: VehicleBody3D
@@ -8,7 +9,7 @@ var player_speed_kmh: float = 0.0
 var loaded_chunks: int = 0
 var total_chunks: int = 0
 
-# Chunk manifest data
+# Chunk manifest data (file mode only)
 var chunk_manifest: Dictionary = {}
 var chunks_path: String = "res://assets/chunks/"
 
@@ -17,11 +18,55 @@ const CHUNK_SIZE: float = 256.0
 const ORIGIN_LAT: float = 51.7189
 const ORIGIN_LON: float = 8.7544
 
+# === Server Mode ===
+## Set to true to load chunks from the streaming server instead of local files.
+var use_server: bool = false
+var server_url: String = "http://127.0.0.1:8090"
+
+# Global UTM origin tracking for floating origin
+# These are the UTM easting/northing of the current Godot (0,0,0) point.
+# Initially set to the Dom origin. Updated by OriginManager during rebase.
+var origin_utm_e: float = 0.0
+var origin_utm_n: float = 0.0
+
+# Precalculated Dom UTM (filled on ready)
+const _DOM_UTM_E: float = 488599.0  # Approximate, overridden at runtime
+const _DOM_UTM_N: float = 5731013.0
+
 
 func _ready() -> void:
-	# Load chunk manifest
-	_load_manifest()
-	print("GameManager ready. Chunks: ", chunk_manifest.get("total_chunks", 0))
+	# Check for server mode via command line args or config
+	_check_server_mode()
+
+	if use_server:
+		print("GameManager ready. Server mode: ", server_url)
+		origin_utm_e = _DOM_UTM_E
+		origin_utm_n = _DOM_UTM_N
+	else:
+		_load_manifest()
+		print("GameManager ready. File mode. Chunks: ", chunk_manifest.get("total_chunks", 0))
+
+
+func _check_server_mode() -> void:
+	# Check command line arguments for --server or --server-url
+	var args := OS.get_cmdline_args()
+	for i in range(args.size()):
+		if args[i] == "--server":
+			use_server = true
+		elif args[i] == "--server-url" and i + 1 < args.size():
+			use_server = true
+			server_url = args[i + 1]
+
+	# Also check for a config file
+	var config_path := "res://server_config.json"
+	if FileAccess.file_exists(config_path):
+		var file := FileAccess.open(config_path, FileAccess.READ)
+		var json := JSON.new()
+		if json.parse(file.get_as_text()) == OK:
+			var cfg: Dictionary = json.data
+			if cfg.get("use_server", false):
+				use_server = true
+				server_url = cfg.get("server_url", server_url)
 
 
 func _load_manifest() -> void:
@@ -57,6 +102,9 @@ func get_chunk_file(cx: int, cz: int, lod: int) -> String:
 
 
 func has_chunk(cx: int, cz: int) -> bool:
+	# In server mode, all chunks are potentially available
+	if use_server:
+		return true
 	var key := "%d_%d" % [cx, cz]
 	return chunk_manifest.has("chunks") and chunk_manifest["chunks"].has(key)
 
